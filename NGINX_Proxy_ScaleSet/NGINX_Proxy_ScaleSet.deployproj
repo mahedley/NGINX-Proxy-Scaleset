@@ -25,6 +25,7 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
+    <Content Include="CustomScripts\nginx_init" />
     <Content Include="CustomScripts\nginx.config" />
     <Content Include="CustomScripts\configurehost.sh" />
     <None Include="Deployment.targets">
