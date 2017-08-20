@@ -6,7 +6,8 @@ curl https://raw.githubusercontent.com/mahedley/NGINX-Proxy-Scaleset/master/NGIN
 curl https://raw.githubusercontent.com/mahedley/NGINX-Proxy-Scaleset/master/NGINX_Proxy_ScaleSet/CustomScripts/nginx_init> /etc/init.d/nginx
 chmod +x /etc/init.d/nginx
 update-rc.d -f nginx defaults
-/etc/init.d/nginx start
+service nginx stop
+service nginx start
 
 
 
