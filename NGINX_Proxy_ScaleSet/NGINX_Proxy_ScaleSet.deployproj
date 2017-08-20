@@ -33,7 +33,7 @@
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <Content Include="azuredeploy.json" />
-    <Content Include="LinuxVirtualMachineScaleSet.parameters.json" />
+    <Content Include="azuredeploy.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

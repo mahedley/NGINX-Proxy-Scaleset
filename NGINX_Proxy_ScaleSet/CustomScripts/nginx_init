@@ -89,7 +89,7 @@ DAEMON=${DAEMON:-/usr/sbin/nginx}       # path to daemon binary
 NGINX_CONF_FILE=${NGINX_CONF_FILE:-/etc/nginx/conf.d/nginx_config.conf} # config file path
 
 PIDNAME=${PIDNAME:-"nginx"}                   # lets you do $PS-slave
-PIDFILE=${PIDFILE:-$PIDNAME.pid}              # pid file
+PIDFILE=${PIDFILE:-/run/$PIDNAME.pid}              # pid file
 PIDSPATH=${PIDSPATH:-/var/log}         # default pid location, you should change it
 RUNAS=${RUNAS:-root}                          # user to run as
 

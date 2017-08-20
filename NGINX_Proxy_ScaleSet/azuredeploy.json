@@ -29,23 +29,11 @@
       "metadata": {
         "description": "Admin password on all VMs."
       }
-    },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access _artifactsLocation"
-      }
     }
 
   },
   "variables": {
-    "ununtuOSVersion": "16.04.3-LTS",
+    "ununtuOSVersion": "16.04-LTS",
     "ScaleSetVNETPrefix": "10.0.0.0/16",
     "ScaleSetVNETSubnet1Name": "SS-Subnet",
     "ScaleSetVNETSubnet1Prefix": "10.0.0.0/24",
@@ -102,19 +90,6 @@
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('PIPName')]",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "dnsSettings": {
-          "domainNameLabel": "[variables('namingInfix')]"
-        }
-      }
-    },
-    {
-
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('pipName')]",
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-03-30",
       "properties": {
@@ -276,15 +251,15 @@
                   "autoUpgradeMinorVersion": true,
                   "settings": {
                     "fileUris": [
-                      "[concat(parameters('_artifactsLocation'), '/', variables('configurehostScriptFolder'), '/', variables('configurehostScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+                      "https://raw.githubusercontent.com/mahedley/NGINX-Proxy-Scaleset/master/NGINX_Proxy_ScaleSet/CustomScripts/configurehost.sh"
                     ],
-                    "commandToExecute": "[concat('sh ', variables('configurehostScriptFileName'))]"
+                    "commandToExecute": "[concat('sh ', 'configurehost.sh')]"
                   }
                 }
               }
             ]
           }
-         
+
         }
       }
     }
