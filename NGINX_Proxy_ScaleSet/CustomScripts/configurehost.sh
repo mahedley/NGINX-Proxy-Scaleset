@@ -8,7 +8,6 @@ chmod +x /etc/init.d/nginx
 update-rc.d -f nginx defaults
 service nginx stop
 service nginx start
-ufw --force enable
 
 
 
