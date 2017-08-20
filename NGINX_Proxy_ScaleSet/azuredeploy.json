@@ -33,6 +33,7 @@
 
   },
   "variables": {
+    "nsgname": "nsg",
     "ununtuOSVersion": "16.04-LTS",
     "ScaleSetVNETPrefix": "10.0.0.0/16",
     "ScaleSetVNETSubnet1Name": "SS-Subnet",
@@ -58,7 +59,8 @@
     "nicName": "[concat(variables('namingInfix'), 'nic')]",
     "ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
     "configurehostScriptFolder": "CustomScripts",
-    "configurehostScriptFileName": "configurehost.sh"
+    "configurehostScriptFileName": "configurehost.sh",
+    "wadProcessorMetricName": "Percentage CPU"
 
   },
   "resources": [
@@ -84,7 +86,10 @@
             "name": "[variables('ScaleSetVNETSubnet1Name')]",
             "properties": {
               "addressPrefix": "[variables('ScaleSetVNETSubnet1Prefix')]",
-              "networkSecurityGroup": "[resourceId('Microsoft.Network/networkSecurityGroups','nsg')]"
+              "networkSecurityGroup": {
+
+                "id":"[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgname'))]" 
+              }
             }
           }
         ]
@@ -104,7 +109,8 @@
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "nsg",
+      "name": "[variables('nsgname')]",
+      "apiVersion": "2017-06-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
@@ -301,6 +307,73 @@
           }
 
         }
+      }
+    },
+    {
+      "name": "autoscalewad",
+      "type": "Microsoft.Insights/autoscaleSettings",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', variables('namingInfix'))]"
+      ],
+      "tags": {
+        "displayName": "autoscale AutoScale"
+      },
+      "properties": {
+        "name": "autoscalewad",
+        "targetResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', variables('namingInfix'))]",
+        "enabled": true,
+        "profiles": [
+          {
+            "name": "Profile1",
+            "capacity": {
+              "minimum": 2,
+              "maximum": 20,
+              "default": 2
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "[variables('wadProcessorMetricName')]",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', variables('namingInfix'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 80
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": 1,
+                  "cooldown": "PT5M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "[variables('wadProcessorMetricName')]",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', variables('namingInfix'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": 60
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": 1,
+                  "cooldown": "PT1M"
+                }
+              }
+            ]
+          }
+        ]
       }
     }
 
